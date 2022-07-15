@@ -1,4 +1,4 @@
-/* const Joi = require('joi');
+const Joi = require('joi');
 const db = require('../database/models');
 const jwtService = require('./jwtService');
 
@@ -11,7 +11,12 @@ const authService = {
 
     const { error, value } = schema.validate(data);
 
-    if (error) throw error;
+    if (error) {
+      error.message = 'Some required fields are missing';
+      error.name = 'ValidationError';
+
+      throw error;
+    }
     
     return value;
   },
@@ -41,4 +46,4 @@ const authService = {
   },
 };
 
-module.exports = authService; */
+module.exports = authService;
