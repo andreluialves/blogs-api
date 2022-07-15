@@ -1,4 +1,4 @@
-const authService = require('../services/authService');
+/* const authService = require('../services/authService');
 const jwtService = require('../services/jwtService');
 
 const authController = {
@@ -19,4 +19,4 @@ const authController = {
   },
 };
 
-module.exports = authController;
+module.exports = authController; */

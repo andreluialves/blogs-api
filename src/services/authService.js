@@ -1,4 +1,4 @@
-const Joi = require('joi');
+/* const Joi = require('joi');
 const db = require('../database/models');
 const jwtService = require('./jwtService');
 
@@ -16,18 +16,18 @@ const authService = {
     return value;
   },
 
-  login: async (email, password) => {
+  login: async (email, authPassword) => {
     const user = await db.User.findOne({ 
       where: { email }, 
     });
 
-    if (!user || user.password !== password) {
+    if (!user || user.password !== authPassword) {
       const err = new Error('Invalid fields');
       err.name = 'UnauthorizedError';
       throw err;
     }
 
-    const { password: noPass, ...userWithoutPassword } = user.dataValues;
+    const { password, ...userWithoutPassword } = user.dataValues;
 
     const token = jwtService.createToken(userWithoutPassword);
 
@@ -41,4 +41,4 @@ const authService = {
   },
 };
 
-module.exports = authService;
+module.exports = authService; */

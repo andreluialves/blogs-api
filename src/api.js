@@ -1,7 +1,7 @@
 const express = require('express');
-const authRouter = require('./routers/authRouter');
-const authController = require('./controllers/authController');
-const errorMiddleware = require('./middlewares/errorMiddleware');
+// const authRouter = require('./routers/authRouter');
+// const authController = require('./controllers/authController');
+// const errorMiddleware = require('./middlewares/errorMiddleware');
 
 // ...
 
@@ -9,11 +9,11 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/login', authRouter);
+// app.use('/login', authRouter);
 
-app.use(authController.validateToken);
+// app.use(authController.validateToken);
 
-app.use(errorMiddleware);
+// app.use(errorMiddleware);
 
 // ...
 

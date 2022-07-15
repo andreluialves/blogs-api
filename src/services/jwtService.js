@@ -1,4 +1,4 @@
-require('dotenv/config');
+/* require('dotenv/config');
 const jwt = require('jsonwebtoken');
 
 const jwtService = {
@@ -19,4 +19,4 @@ const jwtService = {
   },
 };
 
-module.exports = jwtService;
+module.exports = jwtService; */
