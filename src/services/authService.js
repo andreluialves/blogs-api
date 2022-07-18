@@ -28,7 +28,7 @@ const authService = {
 
     if (!user || user.password !== authPassword) {
       const err = new Error('Invalid fields');
-      err.name = 'UnauthorizedError';
+      err.name = 'ValidationError';
       throw err;
     }
 
