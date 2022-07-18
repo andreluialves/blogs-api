@@ -8,6 +8,11 @@ const usersController = {
 
     res.status(201).json({ token });
   },
+
+  list: async (req, res) => {
+    const users = await usersService.list();
+    res.status(200).json(users);
+  },
 };
 
 module.exports = usersController;
