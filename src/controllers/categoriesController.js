@@ -7,6 +7,11 @@ const categoriesController = {
 
     res.status(201).json(category);
   },
+
+  list: async (req, res) => {
+    const categories = await categoriesService.list();
+    res.status(200).json(categories);
+  },
 };
 
 module.exports = categoriesController;
