@@ -13,6 +13,12 @@ const usersController = {
     const users = await usersService.list();
     res.status(200).json(users);
   },
+
+  findById: async (req, res) => {
+    const user = await usersService.findByIdLazy(req.params.id);
+
+    res.status(200).json(user);
+  },
 };
 
 module.exports = usersController;
