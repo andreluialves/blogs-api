@@ -1,7 +1,7 @@
 'use strict';
 
 const createCategory = (sequelize, DataTypes) => {
-  const User = sequelize.define("Category", {
+  const Category = sequelize.define("Category", {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -19,7 +19,7 @@ const createCategory = (sequelize, DataTypes) => {
     }
   );
 
-  return User;
+  return Category;
 };
 
 module.exports = createCategory;
