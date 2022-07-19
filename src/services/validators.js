@@ -7,7 +7,13 @@ const runSchema = (schema) => (data) => {
   return value;
 };
 
-module.exports = { runSchema };
+const runSchemaBlogPost = (schema) => (data) => {
+  const { error, value } = schema.validate(data);
+  if (error) {
+    error.message = 'Some required fields are missing';
+    throw error;
+  }
+  return value;
+};
 
-// if (value.password.length < 6) throw error;
-// if (value.displayName.length < 8) throw error;
+module.exports = { runSchema, runSchemaBlogPost };

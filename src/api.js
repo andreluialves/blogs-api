@@ -3,6 +3,8 @@ require('express-async-errors');
 const authRouter = require('./routers/authRouter');
 const usersRouter = require('./routers/usersRouter');
 const categoriesRouter = require('./routers/categoriesRouter');
+const blogPostsRouter = require('./routers/blogPostsRouter');
+
 // const authController = require('./controllers/authController');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
@@ -17,6 +19,8 @@ app.use('/login', authRouter);
 app.use('/user', usersRouter);
 
 app.use('/categories', categoriesRouter);
+
+app.use('/post', blogPostsRouter);
 
 // app.use(authController.validateToken);
 
