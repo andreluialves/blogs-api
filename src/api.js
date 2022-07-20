@@ -1,5 +1,5 @@
-const express = require('express');
 require('express-async-errors');
+const express = require('express');
 const authRouter = require('./routers/authRouter');
 const usersRouter = require('./routers/usersRouter');
 const categoriesRouter = require('./routers/categoriesRouter');
