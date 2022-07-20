@@ -8,6 +8,6 @@ router.use(authController.validateToken);
 
 router.post('/', blogPostsController.create);
 
-// router.get('/', blogPostsController.list);
+router.get('/', blogPostsController.list);
 
 module.exports = router;

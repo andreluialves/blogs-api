@@ -14,7 +14,7 @@ const blogPostsService = {
     categoryIds: Joi.array().items(Joi.number().positive().integer()),
   })),
 
-  async create(title, content, categoryIds, userId) {
+  create: async (title, content, categoryIds, userId) => {
     await checkCategoryIds(categoryIds);
     const result = sequelize.transaction(async (transaction) => {
       const newBlogPost = await db.BlogPost.create(
@@ -31,6 +31,16 @@ const blogPostsService = {
     });
 
     return result;
+  },
+
+  list: async () => {
+    const blogPosts = await db.BlogPost.findAll({
+      include: [
+        { model: db.User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: db.Category, as: 'categories', through: { attributes: [] } },
+      ],
+    });
+    return blogPosts;
   },
 };
 

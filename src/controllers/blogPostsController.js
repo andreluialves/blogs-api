@@ -11,6 +11,11 @@ const blogPostsController = {
     
     res.status(201).json(blogPost);
   },
+
+  list: async (req, res) => {
+    const blogPosts = await blogPostsService.list();
+    res.status(200).json(blogPosts);
+  },
 };
 
 module.exports = blogPostsController;
