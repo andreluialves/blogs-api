@@ -1,4 +1,5 @@
 const usersService = require('../services/usersService');
+const jwtService = require('../services/jwtService');
 
 const usersController = {
   create: async (req, res) => {
@@ -18,6 +19,14 @@ const usersController = {
     const user = await usersService.findByIdLazy(req.params.id);
 
     res.status(200).json(user);
+  },
+
+  removeMe: async (req, res) => {
+    const user = jwtService.validateToken(req.headers.authorization);
+    const { id: userId } = user.data;
+    await usersService.removeMe(userId);
+    
+    res.sendStatus(204);
   },
 };
 

@@ -43,6 +43,12 @@ const usersService = {
     }
     return user;
   },
+
+  removeMe: async (userId) => {
+    await db.User.destroy({
+      where: { id: userId },
+    });
+  },
 };
 
 module.exports = usersService;
