@@ -42,6 +42,22 @@ const blogPostsService = {
     });
     return blogPosts;
   },
+
+  findByIdLazy: async (id) => {
+    const blogPosts = await db.BlogPost.findByPk(id, {
+      include: [
+        { model: db.User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: db.Category, as: 'categories', through: { attributes: [] } },
+      ],
+    });
+
+    if (!blogPosts) {
+      const e = new Error('Post does not exist');
+      e.name = 'NotFoundError';
+      throw e;
+    }
+    return blogPosts;
+  },
 };
 
 module.exports = blogPostsService;

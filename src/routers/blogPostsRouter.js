@@ -10,4 +10,6 @@ router.post('/', blogPostsController.create);
 
 router.get('/', blogPostsController.list);
 
+router.get('/:id', blogPostsController.findById);
+
 module.exports = router;

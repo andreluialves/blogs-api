@@ -16,6 +16,12 @@ const blogPostsController = {
     const blogPosts = await blogPostsService.list();
     res.status(200).json(blogPosts);
   },
+
+  findById: async (req, res) => {
+    const blogPosts = await blogPostsService.findByIdLazy(req.params.id);
+
+    res.status(200).json(blogPosts);
+  },
 };
 
 module.exports = blogPostsController;
