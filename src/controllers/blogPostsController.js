@@ -31,6 +31,15 @@ const blogPostsController = {
     
     res.status(200).json(blogPost);
   },
+
+  remove: async (req, res) => {
+    const user = jwtService.validateToken(req.headers.authorization);
+    const { id: userId } = user.data;
+    const { id } = req.params;
+    await blogPostsService.remove(id, userId);
+    
+    res.sendStatus(204);
+  },
 };
 
 module.exports = blogPostsController;

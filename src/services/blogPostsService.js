@@ -81,6 +81,26 @@ const blogPostsService = {
 
     return editedBlogPost;
   },
+
+  remove: async (id, userId) => {
+    const blogPost = await db.BlogPost.findByPk(id);
+
+    if (!blogPost) {
+      const e = new Error('Post does not exist');
+      e.name = 'NotFoundError';
+      throw e;
+    }
+
+    if (blogPost.dataValues.userId !== userId) {
+      const e = new Error('Unauthorized user');
+      e.name = 'UnauthorizedError';
+      throw e;
+    }
+
+    await db.BlogPost.destroy({
+      where: { id },
+    });
+  },
 };
 
 module.exports = blogPostsService;

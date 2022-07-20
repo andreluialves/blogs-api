@@ -14,4 +14,6 @@ router.get('/:id', blogPostsController.findById);
 
 router.put('/:id', blogPostsController.edit);
 
+router.delete('/:id', blogPostsController.remove);
+
 module.exports = router;
