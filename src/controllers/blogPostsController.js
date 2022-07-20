@@ -6,7 +6,6 @@ const blogPostsController = {
     const user = jwtService.validateToken(req.headers.authorization);
     const { id: userId } = user.data;
     const { title, content, categoryIds } = blogPostsService.validateBody(req.body);
-  console.log('procurando bug', categoryIds);
     const blogPost = await blogPostsService.create(title, content, categoryIds, userId);
     
     res.status(201).json(blogPost);
@@ -18,9 +17,19 @@ const blogPostsController = {
   },
 
   findById: async (req, res) => {
-    const blogPosts = await blogPostsService.findByIdLazy(req.params.id);
+    const blogPost = await blogPostsService.findByIdLazy(req.params.id);
 
-    res.status(200).json(blogPosts);
+    res.status(200).json(blogPost);
+  },
+
+  edit: async (req, res) => {
+    const user = jwtService.validateToken(req.headers.authorization);
+    const { id: userId } = user.data;
+    const { id } = req.params;
+    const { title, content } = blogPostsService.validateBody(req.body);
+    const blogPost = await blogPostsService.edit(title, content, id, userId);
+    
+    res.status(200).json(blogPost);
   },
 };
 

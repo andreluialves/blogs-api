@@ -44,19 +44,42 @@ const blogPostsService = {
   },
 
   findByIdLazy: async (id) => {
-    const blogPosts = await db.BlogPost.findByPk(id, {
+    const blogPost = await db.BlogPost.findByPk(id, {
       include: [
         { model: db.User, as: 'user', attributes: { exclude: ['password'] } },
         { model: db.Category, as: 'categories', through: { attributes: [] } },
       ],
     });
 
-    if (!blogPosts) {
+    if (!blogPost) {
       const e = new Error('Post does not exist');
       e.name = 'NotFoundError';
       throw e;
     }
-    return blogPosts;
+    return blogPost;
+  },
+
+  edit: async (title, content, id, userId) => {
+    const blogPost = await db.BlogPost.findByPk(id);
+
+    if (!blogPost || blogPost.dataValues.userId !== userId) {
+      const e = new Error('Unauthorized user');
+      e.name = 'UnauthorizedError';
+      throw e;
+    }
+
+    await db.BlogPost.update({ title, content }, {
+      where: { userId },
+    });
+
+    const editedBlogPost = await db.BlogPost.findByPk(id, {
+      include: [
+        { model: db.User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: db.Category, as: 'categories', through: { attributes: [] } },
+      ],
+    });
+
+    return editedBlogPost;
   },
 };
 
