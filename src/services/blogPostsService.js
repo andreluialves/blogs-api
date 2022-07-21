@@ -40,6 +40,7 @@ const blogPostsService = {
         { model: db.Category, as: 'categories', through: { attributes: [] } },
       ],
     });
+
     return blogPosts;
   },
 
@@ -56,6 +57,7 @@ const blogPostsService = {
       err.name = 'NotFoundError';
       throw err;
     }
+    
     return blogPost;
   },
 
@@ -103,16 +105,15 @@ const blogPostsService = {
   },
 
   findByQueryLazy: async (searchValue) => {
-    // const blogPosts2 = await db.BlogPost.findAll();
     const blogPosts = await db.BlogPost.findAll(
       {
         where: {
-          [Sequelize.Op.or]:
-          [{ title: { [Sequelize.Op.substring]: searchValue } },
-          { content: { [Sequelize.Op.substring]: searchValue } }],
+          [Sequelize.Op.or]: [
+            { title: { [Sequelize.Op.substring]: searchValue } },
+            { content: { [Sequelize.Op.substring]: searchValue } },
+          ],
         },
-      },
-      {
+
         include: [
           { model: db.User, as: 'user', attributes: { exclude: ['password'] } },
           { model: db.Category, as: 'categories', through: { attributes: [] } },
