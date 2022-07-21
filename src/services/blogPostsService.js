@@ -52,9 +52,9 @@ const blogPostsService = {
     });
 
     if (!blogPost) {
-      const e = new Error('Post does not exist');
-      e.name = 'NotFoundError';
-      throw e;
+      const err = new Error('Post does not exist');
+      err.name = 'NotFoundError';
+      throw err;
     }
     return blogPost;
   },
@@ -63,9 +63,9 @@ const blogPostsService = {
     const blogPost = await db.BlogPost.findByPk(id);
 
     if (!blogPost || blogPost.dataValues.userId !== userId) {
-      const e = new Error('Unauthorized user');
-      e.name = 'UnauthorizedError';
-      throw e;
+      const err = new Error('Unauthorized user');
+      err.name = 'UnauthorizedError';
+      throw err;
     }
 
     await db.BlogPost.update({ title, content }, {
@@ -86,15 +86,15 @@ const blogPostsService = {
     const blogPost = await db.BlogPost.findByPk(id);
 
     if (!blogPost) {
-      const e = new Error('Post does not exist');
-      e.name = 'NotFoundError';
-      throw e;
+      const err = new Error('Post does not exist');
+      err.name = 'NotFoundError';
+      throw err;
     }
 
     if (blogPost.dataValues.userId !== userId) {
-      const e = new Error('Unauthorized user');
-      e.name = 'UnauthorizedError';
-      throw e;
+      const err = new Error('Unauthorized user');
+      err.name = 'UnauthorizedError';
+      throw err;
     }
 
     await db.BlogPost.destroy({
