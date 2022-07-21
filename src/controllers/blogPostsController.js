@@ -40,6 +40,13 @@ const blogPostsController = {
     
     res.sendStatus(204);
   },
+
+  findByQuery: async (req, res) => {
+    const { q: searchValue } = req.query;
+    const blogPosts = await blogPostsService.findByQueryLazy(searchValue);
+
+    res.status(200).json(blogPosts);
+  },
 };
 
 module.exports = blogPostsController;

@@ -101,6 +101,28 @@ const blogPostsService = {
       where: { id },
     });
   },
+
+  findByQueryLazy: async (searchValue) => {
+    // const blogPosts2 = await db.BlogPost.findAll();
+    const blogPosts = await db.BlogPost.findAll(
+      {
+        where: {
+          [Sequelize.Op.or]:
+          [{ title: { [Sequelize.Op.substring]: searchValue } },
+          { content: { [Sequelize.Op.substring]: searchValue } }],
+        },
+      },
+      {
+        include: [
+          { model: db.User, as: 'user', attributes: { exclude: ['password'] } },
+          { model: db.Category, as: 'categories', through: { attributes: [] } },
+        ],
+      },
+    );
+    if (!blogPosts) return [];
+
+    return blogPosts;
+  },
 };
 
 module.exports = blogPostsService;

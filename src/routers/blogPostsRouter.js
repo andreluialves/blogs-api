@@ -6,6 +6,8 @@ const router = Router();
 
 router.use(authController.validateToken);
 
+router.get('/search', blogPostsController.findByQuery);
+
 router.post('/', blogPostsController.create);
 
 router.get('/', blogPostsController.list);
