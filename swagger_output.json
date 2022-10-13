@@ -1,0 +1,912 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Blogs Api",
+    "description": "API de blog em que há a possibilidade de criação de usuários, categorias e posts. É utilizada uma autenticação JWT (Json Web Token) e, para ter acesso às rotas autenticadas, entre ou crie um novo usuário para receber um token.",
+    "contact": {
+      "email": "andreluialves@hotmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "Autenticação",
+        "description": "Gera o token de autenticação de login.",
+        "tags": [
+          "Login"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              },
+              "examples": {
+                "login": {
+                  "value": {
+                    "email": "any-email@mail.com",
+                    "password": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "Some requerid fields are missing or invalid."
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "summary": "Cadastro de novos usuários",
+        "description": "Através desta rota é possível cadastrar novos usuários.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostUsers"
+              },
+              "examples": {
+                "reqBodyUser": {
+                  "value": {
+                    "displayName": "Brett Wiltshire",
+                    "email": "brett@email.com",
+                    "password": "123456",
+                    "image": "http://4.bp.blogspot.com/_YA50adQ-7vQ/S1gfR_6ufpI/AAAAAAAAAAk/1ErJGgRWZDg/S45/brett.png"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "Some requerid fields are missing or invalid."
+          },
+          "409": {
+            "description": "User already registered."
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todos os usuários",
+        "description": "Através desta rota é possível listar todos os usuários.",
+        "tags": [
+          "Users"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found."
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsers"
+                },
+                "examples": {
+                  "listedUsers": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "displayName": "Lewis Hamilton",
+                        "email": "lewishamilton@gmail.com",
+                        "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                      },
+                      {
+                        "id": 2,
+                        "displayName": "Britney Spears",
+                        "email": "itsbritneybh@gmail.com",
+                        "image": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Britney_Spears%2C_Roundhouse%2C_London_%28Apple_Music_Festival_2016%29_%2830072929931%29_%28cropped%29.jpg"
+                      },
+                      {
+                        "id": 3,
+                        "displayName": "Sonic the Hedgehog",
+                        "email": "blueblur@gmail.com",
+                        "image": "https://upload.wikimedia.org/wikipedia/commons/f/f7/SonicSeriesLogo.png"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Lista um usuário pelo id",
+        "description": "Através desta rota é possível listar um usuário com base no id.",
+        "tags": [
+          "Users"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "Id do usuário a ser retornado.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "404": {
+            "description": "User does not exist"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserById"
+                },
+                "examples": {
+                  "createdUser": {
+                    "value": {
+                      "id": 1,
+                      "displayName": "Lewis Hamilton",
+                      "email": "lewishamilton@gmail.com",
+                      "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "delete": {
+        "summary": "Exclui um usuário",
+        "description": "Através desta rota é possível excluir o usuário com base no token. assim como todas as postagens relacionadas a este usuário",
+        "tags": [
+          "Users"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Token expired, invalid or not found."
+          }
+        }
+      }
+    },
+    "/categories": {
+      "post": {
+        "summary": "Cadastro de novas categorias",
+        "description": "Através desta rota é possível cadastrar novas categorias.",
+        "tags": [
+          "Categories"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCategory"
+              },
+              "examples": {
+                "reqBodyCategory": {
+                  "value": {
+                    "name": "Typescript"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "Name is required"
+          },
+          "409": {
+            "description": "Category already registered."
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/PostCategory"
+                },
+                "examples": {
+                  "createdCategory": {
+                    "value": {
+                      "id": 3,
+                      "name": "Typescript"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todas as categorias",
+        "description": "Através desta rota é possível listar todas as categorias.",
+        "tags": [
+          "Categories"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found."
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/GetCategories"
+                },
+                "examples": {
+                  "listedCategories": {
+                    "value": [
+                      {
+                          "id": 1,
+                          "name": "Inovação"
+                      },
+                      {
+                          "id": 2,
+                          "name": "Escola"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post": {
+      "post": {
+        "summary": "Cadastro de um novo post",
+        "description": "Através desta rota é possível cadastrar um novo post.",
+        "tags": [
+          "Post"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePost"
+              },
+              "examples": {
+                "createpost": {
+                  "value": {
+                    "title": "Latest updates, August 1st",
+                    "content": "The whole text for the blog post goes here in this key",
+                    "categoryIds": [1, 2]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "Some requerid fields are missing or invalid"
+          },
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Token"
+                },
+                "examples": {
+                  "post": {
+                    "value": {
+                      "id": 3,
+                      "title": "Latest updates, August 1st",
+                      "content": "The whole text for the blog post goes here in this key",
+                      "userId": 1,
+                      "updated": "2022-05-18T18:00:01.196Z",
+                      "published": "2022-05-18T18:00:01.196Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Lista todos os posts",
+        "description": "Através desta rota é possível listar todos os posts.",
+        "tags": [
+          "Post"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPost"
+                },
+                "examples": {
+                  "posts": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "title": "Post do Ano",
+                        "content": "Melhor post do ano",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 1,
+                            "name": "Inovação"
+                          }
+                        ]
+                      },
+                      {
+                        "id": 2,
+                        "title": "Post 2",
+                        "content": "Melhor post 2",
+                        "userId": 1,
+                        "published": "2011-08-01T20:58:00.000Z",
+                        "updated": "2011-08-01T20:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 1,
+                            "name": "Inovação"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post/{id}": {
+      "get": {
+        "summary": "Lista um post pelo id",
+        "description": "Através desta rota é possível listar um post com base no id.",
+        "tags": [
+          "Post"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "Id do post a ser retornado.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "404": {
+            "description": "Post does not exist"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostUsers"
+                },
+                "examples": {
+                  "post": {
+                    "value": {
+                      "id": 1,
+                      "title": "Post do Ano",
+                      "content": "Melhor post do ano",
+                      "userId": 1,
+                      "published": "2011-08-01T19:58:00.000Z",
+                      "updated": "2011-08-01T19:58:51.000Z",
+                      "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                      },
+                      "categories": [
+                          {
+                              "id": 1,
+                              "name": "Inovação"
+                          }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Edita um post pelo id",
+        "description": "Através desta rota é possível editar um post com base no id.",
+        "tags": [
+          "Post"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPostReqBody"
+              },
+              "examples": {
+                "editpost": {
+                  "value": {
+                    "title": "Latest updates, August 1st",
+                    "content": "The whole text for the blog post goes here in this key"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "Id do post a ser editado.",
+            "required": true
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "404": {
+            "description": "Post does not exist"
+          },
+          "400": {
+            "description": "Some required fields are missing or invalid"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPost"
+                },
+                "examples": {
+                  "post": {
+                    "value": {
+                      "id": 1,
+                      "title": "Post do Ano",
+                      "content": "Melhor post do ano",
+                      "userId": 1,
+                      "published": "2011-08-01T19:58:00.000Z",
+                      "updated": "2011-08-01T19:58:51.000Z",
+                      "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                      },
+                      "categories": [
+                          {
+                              "id": 1,
+                              "name": "Inovação"
+                          }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Exclui um post",
+        "description": "Através desta rota é possível excluir um post com base no id",
+        "tags": [
+          "Post"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "Id do post a ser excluído",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "404": {
+            "description": "Post does not exist"
+          }
+        }
+      }
+    },
+    "post/search": {
+      "get": {
+        "summary": "Pesquisa por posts",
+        "description": "Através desta rota é possível pesquisar por posts específicos com base em um termo",
+        "tags": [
+          "Post"
+        ],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "termo a ser pesquisado"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Token expired, invalid or not found"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostUsers"
+                },
+                "examples": {
+                  "Search result ok": {
+                    "value": [
+                      {
+                        "id": 2,
+                        "title": "Vamos que vamos",
+                        "content": "Foguete não tem ré",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 2,
+                            "name": "Escola"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "Term not sent in the request": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "title": "Post do Ano",
+                        "content": "Melhor post do ano",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 1,
+                            "name": "Inovação"
+                          }
+                        ]
+                      },
+                      {
+                        "id": 2,
+                        "title": "Vamos que vamos",
+                        "content": "Foguete não tem ré",
+                        "userId": 1,
+                        "published": "2011-08-01T19:58:00.000Z",
+                        "updated": "2011-08-01T19:58:51.000Z",
+                        "user": {
+                          "id": 1,
+                          "displayName": "Lewis Hamilton",
+                          "email": "lewishamilton@gmail.com",
+                          "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2016_Malaysia_2.jpg"
+                        },
+                        "categories": [
+                          {
+                            "id": 2,
+                            "name": "Escola"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "Data not found": {
+                    "value": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "PostUsers": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      },
+      "GetUsers": {
+        "type": "array",
+        "properties": [
+          {
+            "id": {
+              "type": "number"
+            },
+            "displayName": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "GetUserById": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      },
+      "PostCategory": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "GetCategories": {
+        "type": "array",
+        "properties": [
+          {
+            "id": "number",
+            "name": "string"
+          },
+          {
+            "id": "number",
+            "name": "string"
+          }
+        ]
+      },
+      "CreatePost": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content":	{
+            "type": "string"
+          },
+          "categoryIds":	{
+            "type": ["number"]
+          }
+        }
+      },
+      "GetPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content":	{
+            "type": "string"
+          },
+          "userId":	{
+            "type": ["number"]
+          },
+          "updated":	{
+            "type": "string"
+          },
+          "published":	{
+            "type": "string"
+          },
+          "user":	{
+            "type":"object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "email":	{
+                "type": "string"
+              },
+              "image":	{
+                "type": "string"
+              }
+            }
+          },
+          "categories":	{
+            "type":"array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EditPostReqBody": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content":	{
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
